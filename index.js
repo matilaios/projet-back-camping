@@ -1,10 +1,9 @@
 const express = require('express');
 const app = express();
-const tasksRoutes = require('./routes/tasks');
 const bodyParser = require('body-parser');
 const crudUser = require('./routes/crudUser');
+const crudStock = require('./routes/crudStock');
 const chemin= require('path');
-const crudTask = require('./routes/crudTask');
 const cors = require('cors');
 
 
@@ -20,7 +19,7 @@ app.use(cors());
 
 app.use(express.static(chemin.join(__dirname, 'front')));
 
-app.use('/', tasksRoutes, crudUser, crudTask);
+app.use('/', crudUser, crudStock);
 
 
 
