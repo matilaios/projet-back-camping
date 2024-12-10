@@ -12,6 +12,7 @@ const authentification = (req,res,next) => {
             } else {
                 req.userMail = decode.email
                 req.userId = decode.id
+                req.role = decode.role
                 next();
             }
     });
