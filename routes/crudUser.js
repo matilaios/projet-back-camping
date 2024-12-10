@@ -83,29 +83,23 @@ router.get("/readUserById/:idUser", (req, res) => {
   });
 });
 
-// // route mise à jour des utilisateurs
-// router.post("/updateUser/:idUser", (req, res) => {
-//   const { nameUser, mailUser, passwordUser } = req.body;
-//   // les accolades ci dessus renvoient un fichier json
-//   const { idUser } = req.params;
-//   const updateUser =
-//     "UPDATE users SET nameUser = ?, mailUser = ?, passwordUser = ? WHERE idUser = ?;";
-//   bdd.query(
-//     updateUser,
-//     [nameUser, mailUser, passwordUser, idUser],
-//     (error, results) => {
-//       if (error) throw error;
-//       res.json(results);
-//       // res.redirect('../update.html');
-//     }
-//   );
-// });
+  // route mise à jour d'un Tarif par son ID
+  router.post("/updateUser/:idUser", async (req, res) => {
+    const { idUser } = req.params;
+    const { nom, prenom, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays } = req.body;
+  
+    const updateUser = "UPDATE users SET nom = ?, prenom = ?, dateNaissance= ?, mail = ?, password = ?, telephone = ?, adresse = ?, codePostal = ?, ville = ?, pays = ? WHERE idUser = ?,?,?,?,?,?,?,?,?,?;";
+    bdd.query(updateUser, [nom, prenom, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays], (error) => {
+      if (error) throw error;
+      res.send("Données mises à jour");
+    });
+  });
 
 // route suppression des utilisateurs
 router.post("/deleteUser/:idUser", (req, res) => {
-  if (req.role !== "admin") {
-    return res.status(401).send("Vous n'avez pas les droits pour supprimer un utilisateur");
-  }
+  // if (req.role !== "admin") {
+  //   return res.status(401).send("Vous n'avez pas les droits pour supprimer un utilisateur");
+  // }
   const { idUser } = req.params;
 
   const deleteUser = "DELETE FROM users WHERE idUser = ?;";
