@@ -17,9 +17,10 @@ app.use(cors());
 
 
 
-app.use(express.static(chemin.join(__dirname, 'front')));
+// app.use(express.static(chemin.join(__dirname, 'front')));
 
-app.use('/', crudUser, crudStock);
+app.use('/crudUser', crudUser);
+app.use('/', crudStock);
 
 
 
