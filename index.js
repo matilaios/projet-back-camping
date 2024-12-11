@@ -9,6 +9,7 @@ const crudPhoto = require('./routes/crudPhoto');
 const crudPromo = require('./routes/crudPromo');
 const crudSaison = require('./routes/crudSaison');
 const crudTarif = require('./routes/crudTarif');
+const crudReservation = require('./routes/crudReservation');
 const chemin= require('path');
 const cors = require('cors');
 

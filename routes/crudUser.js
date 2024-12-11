@@ -7,48 +7,50 @@ const auth = require("../middleware/auth");
 
 
 // route creation utilisateur entre le code et la BDD - FONCTIONNE
+// avec verification mail si deja existant pour éviter que le serveur plante en cas de tentative de doublon
+// http://127.0.0.1:3000/campingpong/createUser
 router.post("/createUser", async (req, res) => {
-  const { nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays, idPromo } = req.body;
-
+  const { nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10); 
-
-  const insertUser =
-    "INSERT INTO users (nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays, idPromo) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
-  bdd.query(insertUser, [nom, prenom, role, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays, idPromo], (error) => {
+  const insertUser ="INSERT INTO users (nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+  const checkMail = "SELECT * FROM users WHERE mail LIKE ?;";
+  bdd.query(checkMail, [mail], (error, result) =>{
+    if (error) throw error;
+    if (result.length>0){
+      res.status(400).send('Email déjà utilisé')
+        }else{
+        bdd.query(insertUser, [nom, prenom, role, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays], (error) => {
     if (error) throw error;
     res.send("Utilisateur créé avec succès !");
-    // res.redirect('http://localhost:5173/createUser');
+  });
+};
   });
 });
 
+
+
+
+
 // route pour comparer le mot de passe entré par l'utilisateur avec celui enregistré dans la BDD - FONCTIONNE
+// http://127.0.0.1:3000/campingpong/loginUser
 router.post("/loginUser", (req, res) => {
   const { mail, password } = req.body;
-
   // Vérification des données envoyées
   if (!mail || !password) {
     return res.json({ error: "Email et mot de passe sont requis." });
   }
-
-  const checkUser =
-    "SELECT * FROM users WHERE mail = ?;";
-
+  const checkUser ="SELECT * FROM users WHERE mail = ?;";
   bdd.query(checkUser, [mail], (err, results) => {
     if (err) throw err;
-    console.log("Password envoyé : ", password);
-    
+    // console.log("Password envoyé : ", password);
     if (results.length > 0) {
-      
       const user = results[0];
-      console.log("Password hashé : ", user.password);
-
-      console.log(user);
+      // console.log("Password hashé : ", user.password);
+      // console.log(user);
       bcrypt.compare(password, user.password, (error, result) => {
-        console.log(result);
-        
+        // console.log(result);
         if (error) throw error;
         if (result) {
-          
           const token = jwt.sign({ id: user.idUser, email: user.mail, role: user.role}, "secretkey", {
             expiresIn: "1h",
           });
@@ -69,11 +71,14 @@ router.post("/logout", (req, res) => {
   res.json({ message: "Déconnexion réussie" });
 });
 
-// route lecture des utilisateurs - FONCTIONNE
+// route lecture des utilisateurs - FONCTIONNE - interdit pour les non admin
+// http://127.0.0.1:3000/campingpong/readUser
 router.get("/readUser", auth.authentification, (req, res) => {
+  console.log(req.role);
+  console.log(req.userId);
 if (req.role == false) {
-  console.log("vous n'avez pas accès à cette foncitonnalité");
-  res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  console.log("vous n'avez pas accès à cette fonctionnalité");
+  res.status(403).json({ message: "Vous n'avez pas accès à cette foncitonnalité." });
 } else {
   const readUser = "SELECT * FROM users;";
   bdd.query(readUser, (error, results) => {
@@ -87,13 +92,12 @@ if (req.role == false) {
 });
 
 //route lecteur d'un utilisateur par son ID - FONCTIONNE
+// http://127.0.0.1:3000/campingpong/readUserById/23
 router.get("/readUserById/:idUser", auth.authentification, (req, res) => {
   const { idUser } = req.params;
   console.log(idUser);
   console.log(req.role);
   console.log(req.userId);
-
-  
   if ((req.role === 0 && req.userId == idUser) || req.role === 1) {
     const readUser = "SELECT * FROM users WHERE idUser = ?;";
     bdd.query(readUser, [idUser], (error, results) => {
@@ -123,34 +127,31 @@ router.get("/readUserById/:idUser", auth.authentification, (req, res) => {
 
 
 
+
+
+
+
+
+
+
 // route suppression des utilisateurs - FONCTIONNE AUSSI AVEC ROLE ACTIF
+// 
 router.post("/deleteUser/:idUser", auth.authentification, (req, res) => {
-  if (req.role = false) {
+  if (req.role == false) {
     return res.status(401).send("Vous n'avez pas les droits pour supprimer un utilisateur");
   }
   const { idUser } = req.params;
   const deleteUser = "DELETE FROM users WHERE idUser = ?;";
   bdd.query(deleteUser, [idUser], (error, results) => {
-    if (error) throw error;
+    if (error) {
+      console.log('Impossible de supprimer cet utilisateur : des réservations y sont encore associées.');
+    }else{
     res.json(results);
-    // res.redirect('/read.html');
+    res.redirect('/loginUser');
+
+    }
   });
 });
-
-
-// essai route by id avec autorisation seuelemnt si role admin ou si bon id
-
-router.get("/readUserByIdbis/:idUser", (req, res) => {
-  const { idUser } = req.params;
-  const readUser = "SELECT * FROM users WHERE idUser = ?;";
-  bdd.query(readUser, [idUser], (error, results) => {
-    if (error) throw error;
-    res.json(results);
-  });
-});
-
-
-
 
 
 
