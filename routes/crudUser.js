@@ -8,13 +8,13 @@ const auth = require("../middleware/auth");
 
 // route creation utilisateur entre le code et la BDD - FONCTIONNE
 router.post("/createUser", async (req, res) => {
-  const { nom, prenom, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays } = req.body;
+  const { nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays, idPromo } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10); 
 
   const insertUser =
-    "INSERT INTO users (nom, prenom, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays) VALUES (?,?,?,?,?,?,?,?,?,?);";
-  bdd.query(insertUser, [nom, prenom, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays], (error) => {
+    "INSERT INTO users (nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays, idPromo) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
+  bdd.query(insertUser, [nom, prenom, role, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays, idPromo], (error) => {
     if (error) throw error;
     res.send("Utilisateur créé avec succès !");
     // res.redirect('http://localhost:5173/createUser');
@@ -63,20 +63,17 @@ router.post("/loginUser", (req, res) => {
   });
 });
 
-// Comparer les mots de passe
-//         if (passwordUser === user.passwordUser) {
-//             return res.send("Connexion réussie"); // RETURN pour arrêter l'exécution
-//         } else {
-//             return res.send("Mot de passe incorrect"); // RETURN pour arrêter l'exécution
-//         }
-//     });
-// });
+// route de déconnexion
+router.post("/logout", (req, res) => {
+  // Invalider le jeton côté client
+  res.json({ message: "Déconnexion réussie" });
+});
 
 // route lecture des utilisateurs - FONCTIONNE
 router.get("/readUser", auth.authentification, (req, res) => {
-if (req.role && req.role === false) {
+if (req.role == false) {
   console.log("vous n'avez pas accès à cette foncitonnalité");
-  res.status(403).json({ message: "Vous n'avez pas accès à cette foncitonnalité." });
+  res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
 } else {
   const readUser = "SELECT * FROM users;";
   bdd.query(readUser, (error, results) => {

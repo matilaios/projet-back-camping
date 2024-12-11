@@ -27,7 +27,7 @@ app.use(cors());
 
 app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif);
 app.use('/crudUser', crudUser);
-app.use('/', crudStock);
+
 
 
 

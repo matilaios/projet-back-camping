@@ -7,6 +7,10 @@ const auth = require("../middleware/auth");
 
 // route creation option entre le code et la BDD
 router.post("/createOption", async (req, res) => {
+  if (req.role == false) {
+    console.log("vous n'avez pas accès à cette fonctionnalité");
+    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  } else {
     const { nom, description } = req.body;
   
     const insertOption =
@@ -14,7 +18,7 @@ router.post("/createOption", async (req, res) => {
     bdd.query(insertOption, [nom, description], (error) => {
       if (error) throw error;
       res.send("Nouvelle option ajoute");
-    });
+    })};
   });
 
 // route lecture des Options
@@ -36,12 +40,16 @@ router.get("/readOptionById/:idOption", (req, res) => {
     });
   });
 
-  // route mise à jour d'un equipement par son ID
+  // route mise à jour d'une option par son ID
   router.post("/updateOption/:idOption", (req, res) => {
+    if (req.role == false) {
+      console.log("vous n'avez pas accès à cette fonctionnalité");
+      res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+    } else {
     const { idOption } = req.params;
     const { nom, description } = req.body;
   
-    // Récupérer les valeurs actuelles de la promo
+    // Récupérer les valeurs actuelles de l'option
     const getOption = "SELECT * FROM option WHERE idOption = ?;";
     bdd.query(getOption, [idOption], (error, results) => {
         if (error) throw error;
@@ -58,11 +66,15 @@ router.get("/readOptionById/:idOption", (req, res) => {
             if (error) throw error;
             res.send("Option mis à jour");
         });
-    });
+    })};
   });
 
   // route suppression d'une option
 router.post("/deleteOption/:idOption", (req, res) => {
+  if (req.role == false) {
+    console.log("vous n'avez pas accès à cette fonctionnalité");
+    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  } else {
     if (req.role !== "admin") {
       return res.status(401).send("Vous n'avez pas les droits pour supprimer un Option");
     }
@@ -72,7 +84,7 @@ router.post("/deleteOption/:idOption", (req, res) => {
     bdd.query(deleteOption, [idOption], (error, results) => {
       if (error) throw error;
       res.json(results);
-    });
+    })};
   });
 
   module.exports = router;
