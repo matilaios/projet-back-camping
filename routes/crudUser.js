@@ -10,6 +10,7 @@ const auth = require("../middleware/auth");
 // avec verification mail si deja existant pour éviter que le serveur plante en cas de tentative de doublon
 // http://127.0.0.1:3000/campingpong/createUser
 router.post("/createUser", async (req, res) => {
+<<<<<<<<< Temporary merge branch 1
   const { nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10); 
   const insertUser ="INSERT INTO users (nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
@@ -20,15 +21,21 @@ router.post("/createUser", async (req, res) => {
       res.status(400).send('Email déjà utilisé')
         }else{
         bdd.query(insertUser, [nom, prenom, role, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays], (error) => {
+=========
+  const { nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays, idPromo } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, 10); 
+
+  const insertUser =
+    "INSERT INTO users (nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays, idPromo) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
+  bdd.query(insertUser, [nom, prenom, role, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays, idPromo], (error) => {
+>>>>>>>>> Temporary merge branch 2
     if (error) throw error;
     res.send("Utilisateur créé avec succès !");
   });
 };
   });
 });
-
-
-
 
 
 // route pour comparer le mot de passe entré par l'utilisateur avec celui enregistré dans la BDD - FONCTIONNE
@@ -74,11 +81,17 @@ router.post("/logout", (req, res) => {
 // route lecture des utilisateurs - FONCTIONNE - interdit pour les non admin
 // http://127.0.0.1:3000/campingpong/readUser
 router.get("/readUser", auth.authentification, (req, res) => {
+<<<<<<<<< Temporary merge branch 1
   console.log(req.role);
   console.log(req.userId);
 if (req.role == false) {
   console.log("vous n'avez pas accès à cette fonctionnalité");
   res.status(403).json({ message: "Vous n'avez pas accès à cette foncitonnalité." });
+=========
+if (req.role == false) {
+  console.log("vous n'avez pas accès à cette foncitonnalité");
+  res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+>>>>>>>>> Temporary merge branch 2
 } else {
   const readUser = "SELECT * FROM users;";
   bdd.query(readUser, (error, results) => {
@@ -123,15 +136,6 @@ router.get("/readUserById/:idUser", auth.authentification, (req, res) => {
   //     res.send("Données mises à jour");
   //   });
   // });
-
-
-
-
-
-
-
-
-
 
 
 // route suppression des utilisateurs - FONCTIONNE AUSSI AVEC ROLE ACTIF
@@ -180,11 +184,6 @@ console.log(req.body);
     res.send("Données mises à jour");
   });
 });
-
-
-
-
-
 
 
 
