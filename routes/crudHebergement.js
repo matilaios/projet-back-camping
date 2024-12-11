@@ -8,6 +8,10 @@ const auth = require("../middleware/auth");
 
 // route creation hebergement entre le code et la BDD
 router.post("/createHebergement", async (req, res) => {
+  if (req.role == false) {
+    console.log("vous n'avez pas accès à cette fonctionnalité");
+    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  } else {
     const { numero, nom, description, type, capacite } = req.body;
   
     const insertHebergement =
@@ -15,7 +19,7 @@ router.post("/createHebergement", async (req, res) => {
     bdd.query(insertHebergement, [numero, nom, description, type, capacite], (error) => {
       if (error) throw error;
       res.send("Nouveau type d'hebergement ajoute");
-    });
+    })};
   });
 
 // route lecture des hebergements
@@ -39,6 +43,10 @@ router.get("/readHebergementById/:idHebergement", (req, res) => {
 
   // route mise à jour d'un equipement par son ID
   router.post("/updateHebergement/:idHebergement", (req, res) => {
+    if (req.role == false) {
+      console.log("vous n'avez pas accès à cette fonctionnalité");
+      res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+    } else {
     const { idHebergement } = req.params;
     const { numero, nom, description, type, capacite } = req.body;
   
@@ -62,21 +70,22 @@ router.get("/readHebergementById/:idHebergement", (req, res) => {
             if (error) throw error;
             res.send("Hebergement mis à jour");
         });
-    });
+    })};
   });
 
   // route suppression d'un hebergement
 router.delete("/deleteHebergement/:idHebergement", (req, res) => {
-    // if (req.role !== "admin") {
-    //   return res.status(401).send("Vous n'avez pas les droits pour supprimer un hebergement");
-    // }
+  if (req.role == false) {
+    console.log("vous n'avez pas accès à cette fonctionnalité");
+    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  } else {
     const { idHebergement } = req.params;
   
     const deleteHebergement = "DELETE FROM hebergement WHERE idHebergement = ?;";
     bdd.query(deleteHebergement, [idHebergement], (error, results) => {
       if (error) throw error;
       res.json(results);
-    });
+    })};
   });
 
   

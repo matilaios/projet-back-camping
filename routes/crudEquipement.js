@@ -5,8 +5,13 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 
 // route creation equipement
-router.post("/creationEquipement", (req, res) => {
+router.post("/creationEquipement", auth.authentification, (req, res) => {
+  if (req.role == false) {
+    console.log("vous n'avez pas accès à cette foncitonnalité");
+    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  } else {
   const { nom, description, consommable, quantite } = req.body;
+  console.log(req.role);
   const insertStuff =
     "INSERT INTO equipement (nom, description,consommable, quantite) VALUES (?,?,?,?);";
   bdd.query(
@@ -16,20 +21,29 @@ router.post("/creationEquipement", (req, res) => {
       if (error) throw error;
       res.json(results);
     }
-  );
+  )};
 });
 
 // route lecture des equipements
-router.get("/lectureEquipement", (req, res) => {
-  const readEquipements = "SELECT * FROM equipement";
-  bdd.query(readEquipements, (error, results) => {
-    if (error) throw error;
-    res.json(results);
-  });
+router.get("/lectureEquipement", auth.authentification, (req, res) => {
+  if (req.role == false) {
+    console.log("vous n'avez pas accès à cette fonctionnalité");
+    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  } else {
+    const readEquipements = "SELECT * FROM equipement";
+    bdd.query(readEquipements, (error, results) => {
+      if (error) throw error;
+      res.json(results);
+    });
+  }
 });
 
   // route mise à jour d'un equipement par son ID
   router.post("/updateEquip/:idEquipement", (req, res) => {
+    if (req.role == false) {
+      console.log("vous n'avez pas accès à cette fonctionnalité");
+      res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+    } else {
     const { idEquipement } = req.params;
     const { nom, description, consommable, quantite } = req.body;
   
@@ -52,22 +66,24 @@ router.get("/lectureEquipement", (req, res) => {
             if (error) throw error;
             res.send("Equipement mis à jour");
         });
-    });
+    })};
   });
 
 
 // route suppression des equipements
 router.delete("/supprEquipement/:idEquipement", (req, res) => {
+  if (req.role == false) {
+    console.log("vous n'avez pas accès à cette fonctionnalité");
+    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  } else {
     const { idEquipement } = req.params;
   
     const deleteEquipement = "DELETE FROM equipement WHERE idEquipement = ?;";
     bdd.query(deleteEquipement, [idEquipement], (error, results) => {
       if (error) throw error;
       res.json(results);
-    });
+    })};
   });
-
-
 
 
 

@@ -7,6 +7,10 @@ const auth = require("../middleware/auth");
 
 // route creation Saison entre le code et la BDD
 router.post("/createSaison", async (req, res) => {
+  if (req.role == false) {
+    console.log("vous n'avez pas accès à cette fonctionnalité");
+    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  } else {
     const { nom, dateDebut, dateFin } = req.body;
   
     const insertSaison =
@@ -14,7 +18,7 @@ router.post("/createSaison", async (req, res) => {
     bdd.query(insertSaison, [nom, dateDebut, dateFin], (error) => {
       if (error) throw error;
       res.send("Nouvelle Saison ajoutee");
-    });
+    })};
   });
 
 // route lecture des Saisons
