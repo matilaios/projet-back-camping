@@ -7,6 +7,10 @@ const auth = require("../middleware/auth");
 
 // route creation Promotion entre le code et la BDD
 router.post("/createPromotion", async (req, res) => {
+  if (req.role == false) {
+    console.log("vous n'avez pas accès à cette fonctionnalité");
+    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  } else {
     const { code, nom, montant } = req.body;
   
     const insertPromotion =
@@ -14,7 +18,7 @@ router.post("/createPromotion", async (req, res) => {
     bdd.query(insertPromotion, [code, nom, montant], (error) => {
       if (error) throw error;
       res.send("Nouvelle Promotion ajoute");
-    });
+    })};
   });
 
 // route lecture des Promotions
@@ -38,6 +42,10 @@ router.get("/readPromotionById/:idPromo", (req, res) => {
 
   // route mise à jour d'une promo par son ID
 router.post("/updatePromo/:idPromo", async (req, res) => {
+  if (req.role == false) {
+    console.log("vous n'avez pas accès à cette fonctionnalité");
+    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  } else {
   const { idTarif } = req.params;
   const { code, nom, montant } = req.body;
 
@@ -59,11 +67,15 @@ router.post("/updatePromo/:idPromo", async (req, res) => {
           if (error) throw error;
           res.send("Promo mis à jour");
       });
-  });
+  })};
 });
 
   // route suppression des promos
 router.post("/deletePromotion/:idPromo", (req, res) => {
+  if (req.role == false) {
+    console.log("vous n'avez pas accès à cette fonctionnalité");
+    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+  } else {
     if (req.role !== "admin") {
       return res.status(401).send("Vous n'avez pas les droits pour supprimer un Promotion");
     }
@@ -73,7 +85,7 @@ router.post("/deletePromotion/:idPromo", (req, res) => {
     bdd.query(deletePromotion, [idPromo], (error, results) => {
       if (error) throw error;
       res.json(results);
-    });
+    })};
   });
 
   module.exports = router;
