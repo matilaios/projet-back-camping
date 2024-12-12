@@ -134,7 +134,7 @@ router.delete("/deleteReservation/:idReservation", auth.authentification, (req,r
     console.log("votre role est admin si 1 - utilisateur normal 0 : "+req.role);
     let deleteResa="";
     let queryParams=[]     
-    if (req.role === 0 && req.userId===resaUserId) {
+    if (req.role === 0 && req.userId==resaUserId) {
         console.log("utilisateur lamba et suppression de sa propre reservation");
         deleteResa = "DELETE FROM reservation WHERE idReservation=? and idUser=?;";
        queryParams = [idReservation, req.userId ];
@@ -146,7 +146,6 @@ router.delete("/deleteReservation/:idReservation", auth.authentification, (req,r
         console.log("vous n'avez pas les droits pour supprimer cette reservation");
       }
     bdd.query(deleteResa, queryParams, (error, result)=>{
-
         if (error){
             console.error("Erreur lors de la mise à jour :", error);
             // res.status(500).send("Une erreur est survenue lors de la suppression de la réservation.");

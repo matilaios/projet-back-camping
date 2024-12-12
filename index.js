@@ -27,8 +27,8 @@ app.use(cors());
 // app.use(express.static(chemin.join(__dirname, 'front')));
 
 
-app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif);
-app.use('/crudUser', crudUser);
+app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif, crudReservation);
+// app.use('/crudUser', crudUser);
 
 
 
