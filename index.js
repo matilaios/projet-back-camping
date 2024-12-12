@@ -20,7 +20,11 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded());
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', // URL de votre front-end
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Authorization', 'Content-Type']
+}));
 
 
 
@@ -28,7 +32,8 @@ app.use(cors());
 
 
 app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif, crudReservation);
-// app.use('/crudUser', crudUser);
+
+
 
 
 

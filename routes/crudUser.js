@@ -9,25 +9,60 @@ const auth = require("../middleware/auth");
 // route creation utilisateur entre le code et la BDD - FONCTIONNE
 // avec verification mail si deja existant pour éviter que le serveur plante en cas de tentative de doublon
 // http://127.0.0.1:3000/campingpong/createUser
+
 router.post("/createUser", async (req, res) => {
+  const {
+    nom,
+    prenom,
+    role,
+    dateNaissance,
+    mail,
+    password,
+    telephone,
+    adresse,
+    codePostal,
+    ville,
+    pays,
+    idPromo,
+  } = req.body;
 
-  const { nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10); 
-  const insertUser ="INSERT INTO users (nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
-  const checkMail = "SELECT * FROM users WHERE mail LIKE ?;";
-  bdd.query(checkMail, [mail], (error, result) =>{
-    if (error) throw error;
-    if (result.length>0){
-      res.status(400).send('Email déjà utilisé')
-        }else{
-        bdd.query(insertUser, [nom, prenom, role, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays], (error) => {
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    if (error) throw error;
-    res.send("Utilisateur créé avec succès !");
-  });
-};
-  });
+    const insertUser =
+      "INSERT INTO users (nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays, idPromo) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
+
+    const checkMail = "SELECT * FROM users WHERE mail LIKE ?;";
+
+    // Vérification si l'email existe déjà
+    bdd.query(checkMail, [mail], (error, result) => {
+      if (error) {
+        throw error;
+      }
+
+      if (result.length > 0) {
+        res.status(400).send("Email déjà utilisé");
+      } else {
+        // Insertion de l'utilisateur
+        bdd.query(
+          insertUser,
+          [nom, prenom, role, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays, idPromo],
+          (error) => {
+            if (error) {
+              throw error;
+            }
+
+            res.send("Utilisateur créé avec succès !");
+          }
+        );
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Une erreur s'est produite.");
+  }
 });
+
 
 
 // route pour comparer le mot de passe entré par l'utilisateur avec celui enregistré dans la BDD - FONCTIONNE
@@ -45,7 +80,7 @@ router.post("/loginUser", (req, res) => {
     if (results.length > 0) {
       const user = results[0];
       // console.log("Password hashé : ", user.password);
-      // console.log(user);
+      console.log(user);
       bcrypt.compare(password, user.password, (error, result) => {
         // console.log(result);
         if (error) throw error;
@@ -54,6 +89,7 @@ router.post("/loginUser", (req, res) => {
             expiresIn: "1h",
           });
           res.json({ token });
+          console.log(token);
         } else {
           res.status(401).json({ error: "Email ou mot de passe incorrect" });
         }
@@ -79,7 +115,6 @@ router.get("/readUser", auth.authentification, (req, res) => {
 if (req.role == false) {
   console.log("vous n'avez pas accès à cette fonctionnalité");
   res.status(403).json({ message: "Vous n'avez pas accès à cette foncitonnalité." });
-
 } else {
   const readUser = "SELECT * FROM users;";
   bdd.query(readUser, (error, results) => {
@@ -87,9 +122,6 @@ if (req.role == false) {
     res.json(results);
   });
 };
-
-
-
 });
 
 //route lecteur d'un utilisateur par son ID - FONCTIONNE

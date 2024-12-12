@@ -10,8 +10,8 @@ const authentification = (req,res,next) => {
                 console.log('erreur de vérification du token:', error)
                 return res.status(401).send('token incorrect')
             } else {
-                req.userMail = decode.email
-                req.userId = decode.id
+                req.mail = decode.email
+                req.idUser = decode.id
                 req.role = decode.role
                 next();
             }
