@@ -20,21 +20,19 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded());
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', // URL de votre front-end
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Authorization', 'Content-Type']
+}));
 
 
 
 // app.use(express.static(chemin.join(__dirname, 'front')));
 
-<<<<<<<<< Temporary merge branch 1
-app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif, crudReservation);
-// app.use('/crudUser', crudUser);
-// app.use('/', crudStock);
-=========
-app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif);
-app.use('/crudUser', crudUser);
 
->>>>>>>>> Temporary merge branch 2
+app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif, crudReservation);
+
 
 
 
