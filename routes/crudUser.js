@@ -61,8 +61,6 @@ router.post("/createUser", async (req, res) => {
   }
 });
 
-
-
 // route pour comparer le mot de passe entré par l'utilisateur avec celui enregistré dans la BDD - FONCTIONNE
 // http://127.0.0.1:3000/campingpong/loginUser
 router.post("/loginUser", (req, res) => {
