@@ -51,19 +51,16 @@ router.post("/createUser", async (req, res) => {
             }
 
             res.send("Utilisateur créé avec succès !");
-
           }
-
-          res.send("Utilisateur créé avec succès !");
-        }
-      );
-    }
-  });
-} catch (error) {
-  console.error(error);
-  res.status(500).send("Une erreur s'est produite.");
-}
+        );
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Une erreur s'est produite.");
+  }
 });
+
 
 // route pour comparer le mot de passe entré par l'utilisateur avec celui enregistré dans la BDD - FONCTIONNE
 // http://127.0.0.1:3000/campingpong/loginUser
