@@ -46,3 +46,4 @@ router.get("/readActivites", auth.authentification, (req, res) => {
 });
 
 module.exports = router;
+
