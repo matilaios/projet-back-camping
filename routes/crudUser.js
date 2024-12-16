@@ -30,37 +30,35 @@ router.post("/createUser", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const insertUser =
-      "INSERT INTO users (nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays, idPromo) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
+    "INSERT INTO users (nom, prenom, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays) VALUES (?,?,?,?,?,?,?,?,?,?);";
+  const checkMail = "SELECT * FROM users WHERE mail LIKE ?;";
 
-    const checkMail = "SELECT * FROM users WHERE mail LIKE ?;";
-
-    // Vérification si l'email existe déjà
-    bdd.query(checkMail, [mail], (error, result) => {
-      if (error) {
-        throw error;
-      }
-
-      if (result.length > 0) {
-        res.status(400).send("Email déjà utilisé");
-      } else {
-        // Insertion de l'utilisateur
-        bdd.query(
-          insertUser,
-          [nom, prenom, role, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays, idPromo],
-          (error) => {
-            if (error) {
-              throw error;
-            }
-
-            res.send("Utilisateur créé avec succès !");
+  // Vérification si l'email existe déjà
+  bdd.query(checkMail, [mail], (error, result) => {
+    if (error) {
+      throw error;
+    }
+    if (result.length > 0) {
+      res.status(400).send("Email déjà utilisé");
+    } else {
+      // Insertion de l'utilisateur
+      bdd.query(
+        insertUser,
+        [nom, prenom, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays],
+        (error) => {
+          if (error) {
+            throw error;
           }
-        );
-      }
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Une erreur s'est produite.");
-  }
+
+          res.send("Utilisateur créé avec succès !");
+        }
+      );
+    }
+  });
+} catch (error) {
+  console.error(error);
+  res.status(500).send("Une erreur s'est produite.");
+}
 });
 
 
