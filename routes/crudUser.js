@@ -30,24 +30,28 @@ router.post("/createUser", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const insertUser =
-    "INSERT INTO users (nom, prenom, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays) VALUES (?,?,?,?,?,?,?,?,?,?);";
-  const checkMail = "SELECT * FROM users WHERE mail LIKE ?;";
+      "INSERT INTO users (nom, prenom, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays) VALUES (?,?,?,?,?,?,?,?,?,?);";
+    const checkMail = "SELECT * FROM users WHERE mail LIKE ?;";
 
-  // Vérification si l'email existe déjà
-  bdd.query(checkMail, [mail], (error, result) => {
-    if (error) {
-      throw error;
-    }
-    if (result.length > 0) {
-      res.status(400).send("Email déjà utilisé");
-    } else {
-      // Insertion de l'utilisateur
-      bdd.query(
-        insertUser,
-        [nom, prenom, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays],
-        (error) => {
-          if (error) {
-            throw error;
+    // Vérification si l'email existe déjà
+    bdd.query(checkMail, [mail], (error, result) => {
+      if (error) {
+        throw error;
+      }
+      if (result.length > 0) {
+        res.status(400).send("Email déjà utilisé");
+      } else {
+        // Insertion de l'utilisateur
+        bdd.query(
+          insertUser,
+          [nom, prenom, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays],
+          (error) => {
+            if (error) {
+              throw error;
+            }
+
+            res.send("Utilisateur créé avec succès !");
+
           }
 
           res.send("Utilisateur créé avec succès !");
@@ -60,8 +64,6 @@ router.post("/createUser", async (req, res) => {
   res.status(500).send("Une erreur s'est produite.");
 }
 });
-
-
 
 // route pour comparer le mot de passe entré par l'utilisateur avec celui enregistré dans la BDD - FONCTIONNE
 // http://127.0.0.1:3000/campingpong/loginUser
@@ -169,7 +171,7 @@ router.post("/deleteUser/:idUser", auth.authentification, (req, res) => {
       console.log('Impossible de supprimer cet utilisateur : des réservations y sont encore associées.');
     }else{
     res.json(results);
-    res.redirect('/loginUser');
+    // res.redirect('/loginUser'); ---- pas deux res. dans le même groupe d'exécution
 
     }
   });

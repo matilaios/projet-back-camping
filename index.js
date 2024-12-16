@@ -10,7 +10,11 @@ const crudPromo = require('./routes/crudPromo');
 const crudSaison = require('./routes/crudSaison');
 const crudTarif = require('./routes/crudTarif');
 const crudReservation = require('./routes/crudReservation');
-const crudActivite = require('./routes/crudActivite'); 
+
+const crudActivite = require('./routes/crudActivite');
+
+const chemin= require('path');
+
 const cors = require('cors');
 
 
@@ -31,7 +35,9 @@ app.use(cors({
 // app.use(express.static(chemin.join(__dirname, 'front')));
 
 
-app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif, crudReservation, crudActivite);
+
+app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif, crudReservation, crudActivite );
+
 
 
 
