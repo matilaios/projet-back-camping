@@ -53,7 +53,7 @@ router.get("/readResaById/:idReservation", auth.authentification, (req,res)=>{
     console.log("numero de la reservation : "+idReservation);
     let queryParams=[];
     // methode pour récupérer l'iduser qui est associé à la réservation
-    readResaById="SELECT users.idUser, users.nom, users.prenom, reservation.idReservation, reservation.dateDebut, reservation.dateFin, reservation.nombreAdulte, reservation.nombreEnfant, reservation.nombreBebe, reservation.nombreVehicule, reservation.prixTotal, hebergement_resa.idHebergement, hebergement.numero FROM reservation INNER JOIN users ON users.idUser=reservation.idUser LEFT JOIN hebergement_resa ON reservation.idReservation=hebergement_resa.idReservation INNER JOIN hebergement ON hebergement.idhebergement=hebergement_resa.idhebergement WHERE reservation.idReservation=?;";
+    const readResaById="SELECT users.idUser, users.nom, users.prenom, reservation.idReservation, reservation.dateDebut, reservation.dateFin, reservation.nombreAdulte, reservation.nombreEnfant, reservation.nombreBebe, reservation.nombreVehicule, reservation.prixTotal, hebergement_resa.idHebergement, hebergement.numero FROM reservation INNER JOIN users ON users.idUser=reservation.idUser LEFT JOIN hebergement_resa ON reservation.idReservation=hebergement_resa.idReservation INNER JOIN hebergement ON hebergement.idhebergement=hebergement_resa.idhebergement WHERE reservation.idReservation=?;";
     bdd.query(readResaById, [idReservation], (error, result)=>{
         if (error) throw error;
         // console.log(result[0].idUser);
@@ -109,20 +109,28 @@ router.post("/updateReservation/:idReservation", auth.authentification, (req,res
     bdd.query(updateResa, queryParams, (error, result)=>{
         if (error){
             console.error("Erreur lors de la mise à jour :", error);
-            res.status(500).send("Une erreur est survenue lors de la mise à jour de la réservation.");
+            // res.status(500).send("Une erreur est survenue lors de la mise à jour de la réservation.");
         }
         console.log(result);
         res.send("reservation mise à jour avec succès");
     });
 });
 
-// route delete - 
+// route delete - FONCTIONNE OK 12/12/24
 router.delete("/deleteReservation/:idReservation", auth.authentification, (req,res)=>{
         const {idReservation}= req.params;
     // pour lire iduser de la reservation
-    readResaById="SELECT * from RESERVATION WHERE reservation.idReservation=?;";
+    const readResaById="SELECT * from RESERVATION WHERE reservation.idReservation=?;";
     bdd.query(readResaById, [idReservation], (error, result)=>{
-        if (error) throw error;
+        if (error) {
+            console.error("Erreur lors de la lecture de la réservation :", error);
+            return res.status(500).send("Une erreur est survenue.");
+        }
+        if (result.length === 0) {
+            console.log("Aucune réservation trouvée avec cet ID.");
+            return res.status(404).send("Réservation introuvable.");
+        }
+
         console.log(result[0].idUser);
         const resaUserId =result[0].idUser;
         console.log(resaUserId);
@@ -134,8 +142,9 @@ router.delete("/deleteReservation/:idReservation", auth.authentification, (req,r
     console.log("votre role est admin si 1 - utilisateur normal 0 : "+req.role);
     let deleteResa="";
     let queryParams=[]     
+    // verification des droits
     if (req.role === 0 && req.userId===resaUserId) {
-        console.log("utilisateur lamba et suppression de sa propre reservation");
+        console.log("utilisateur standard et suppression de sa propre reservation");
         deleteResa = "DELETE FROM reservation WHERE idReservation=? and idUser=?;";
        queryParams = [idReservation, req.userId ];
       }else if (req.role===1){
@@ -144,14 +153,16 @@ router.delete("/deleteReservation/:idReservation", auth.authentification, (req,r
         queryParams = [idReservation ];
       }else{
         console.log("vous n'avez pas les droits pour supprimer cette reservation");
+        return res.status(403).send("Action non autorisée.");
       }
+    //   execution de la requete de suppression
     bdd.query(deleteResa, queryParams, (error, result)=>{
 
         if (error){
-            console.error("Erreur lors de la mise à jour :", error);
-            // res.status(500).send("Une erreur est survenue lors de la suppression de la réservation.");
+            console.error("Erreur lors de la suppression:", error);
+            res.status(500).send("Une erreur est survenue lors de la suppression de la réservation.");
         }
-        console.log(result);
+        console.log("resultat de la supression : ",error);
         res.send("suppression avec succès");
     });
 });

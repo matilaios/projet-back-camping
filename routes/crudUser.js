@@ -167,7 +167,7 @@ router.post("/deleteUser/:idUser", auth.authentification, (req, res) => {
       console.log('Impossible de supprimer cet utilisateur : des réservations y sont encore associées.');
     }else{
     res.json(results);
-    res.redirect('/loginUser');
+    // res.redirect('/loginUser'); ---- pas deux res. dans le même groupe d'exécution
 
     }
   });

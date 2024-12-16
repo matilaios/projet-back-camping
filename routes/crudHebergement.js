@@ -10,15 +10,17 @@ const auth = require("../middleware/auth");
 router.post("/createHebergement", async (req, res) => {
   if (req.role == false) {
     console.log("vous n'avez pas accès à cette fonctionnalité");
-    res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
+    return  res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
   } else {
     const { numero, nom, description, type, capacite } = req.body;
-  
     const insertHebergement =
       "INSERT INTO hebergement (numero, nom, description, type, capacite) VALUES (?,?,?,?,?);";
-    bdd.query(insertHebergement, [numero, nom, description, type, capacite], (error) => {
-      if (error) throw error;
-      res.send("Nouveau type d'hebergement ajoute");
+    bdd.query(insertHebergement, [numero, nom, description, type, capacite], (error, result) => {
+      if (error) {
+        return  res.status(500).send("Une erreur s'est produite.");
+      }
+      console.log(result);
+      return res.send("Nouveau type d'hebergement ajoute");
     })};
   });
 
