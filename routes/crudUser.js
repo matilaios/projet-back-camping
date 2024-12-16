@@ -30,8 +30,7 @@ router.post("/createUser", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const insertUser =
-      "INSERT INTO users (nom, prenom, role, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays, idPromo) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
-
+      "INSERT INTO users (nom, prenom, dateNaissance, mail, password, telephone, adresse, codePostal, ville, pays) VALUES (?,?,?,?,?,?,?,?,?,?);";
     const checkMail = "SELECT * FROM users WHERE mail LIKE ?;";
 
     // Vérification si l'email existe déjà
@@ -39,14 +38,13 @@ router.post("/createUser", async (req, res) => {
       if (error) {
         throw error;
       }
-
       if (result.length > 0) {
         res.status(400).send("Email déjà utilisé");
       } else {
         // Insertion de l'utilisateur
         bdd.query(
           insertUser,
-          [nom, prenom, role, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays, idPromo],
+          [nom, prenom, dateNaissance, mail, hashedPassword, telephone, adresse, codePostal, ville, pays],
           (error) => {
             if (error) {
               throw error;
@@ -171,7 +169,7 @@ router.post("/deleteUser/:idUser", auth.authentification, (req, res) => {
       console.log('Impossible de supprimer cet utilisateur : des réservations y sont encore associées.');
     }else{
     res.json(results);
-    res.redirect('/loginUser');
+    // res.redirect('/loginUser'); ---- pas deux res. dans le même groupe d'exécution
 
     }
   });
