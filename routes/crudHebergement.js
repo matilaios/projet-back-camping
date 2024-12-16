@@ -26,7 +26,7 @@ router.post("/createHebergement", async (req, res) => {
 
 // route lecture des hebergements
 router.get("/readHebergement", (req, res) => {
-    const readHebergement = "SELECT * FROM hebergement;";
+    const readHebergement = "SELECT hebergement.nom, hebergement.description, hebergement.type, hebergement.capacite, photo.image, equipement.nom, equipement.description  FROM hebergement INNER JOIN photo ON hebergement.idHebergement = photo.idPhoto INNER JOIN equipement ON hebergement.idHebergement = equipement.idEquipement;";
     bdd.query(readHebergement, (error, results) => {
       if (error) throw error;
       res.json(results);
@@ -90,5 +90,5 @@ router.delete("/deleteHebergement/:idHebergement", (req, res) => {
     })};
   });
 
-  
+
   module.exports = router;
