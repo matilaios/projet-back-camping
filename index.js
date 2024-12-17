@@ -10,13 +10,15 @@ const crudPromo = require('./routes/crudPromo');
 const crudSaison = require('./routes/crudSaison');
 const crudTarif = require('./routes/crudTarif');
 const crudReservation = require('./routes/crudReservation');
+const crudTypeHebergement = require('./routes/crudTypeHebergement');
+const crudActivite = require('./routes/crudActivite'); 
+const crudTypeActivite = require('./routes/crudTypeActivite'); 
 
-
-const crudActivite = require('./routes/crudActivite');
 
 const chemin= require('path');
 
 const cors = require('cors');
+const multer = require('multer');
 
 
 
@@ -31,13 +33,21 @@ app.use(cors({
     allowedHeaders: ['Authorization', 'Content-Type']
 }));
 
+app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(500).send(err.message);
+    } else if (err) {
+      return res.status(500).send('Une erreur est survenue');
+    }
+    next();
+  });
 
 
 // app.use(express.static(chemin.join(__dirname, 'front')));
 
 
 
-app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif, crudReservation, crudActivite );
+app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif, crudReservation, crudActivite, crudTypeActivite, crudTypeHebergement);
 
 
 
