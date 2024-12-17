@@ -11,7 +11,7 @@ const crudSaison = require('./routes/crudSaison');
 const crudTarif = require('./routes/crudTarif');
 const crudReservation = require('./routes/crudReservation');
 
-const crudActivite = require('./routes/crudActivite'); 
+
 const crudActivite = require('./routes/crudActivite');
 
 const chemin= require('path');
