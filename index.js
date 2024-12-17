@@ -12,6 +12,7 @@ const crudTarif = require('./routes/crudTarif');
 const crudReservation = require('./routes/crudReservation');
 const crudTypeHebergement = require('./routes/crudTypeHebergement');
 const crudActivite = require('./routes/crudActivite'); 
+const crudTypeActivite = require('./routes/crudTypeActivite'); 
 
 
 const chemin= require('path');
@@ -46,7 +47,7 @@ app.use((err, req, res, next) => {
 
 
 
-app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif, crudReservation, crudActivite, crudTypeHebergement);
+app.use('/campingpong', crudUser, crudEquipement, crudHebergement, crudOption, crudPhoto, crudPromo, crudSaison, crudTarif, crudReservation, crudActivite, crudTypeActivite, crudTypeHebergement);
 
 
 

@@ -5,8 +5,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
 
-// route CREER une activite entre le code et la BDD - UNIQUEMENT POUR LES ADMIN
-router.post("/createActivite", auth.authentification, (req, res) => {
+// route CREER un type d'activité entre le code et la BDD - UNIQUEMENT POUR LES ADMIN
+router.post("/createTypeActivite", auth.authentification, (req, res) => {
   // console.log("votre role est : " + req.role);
   // console.log("id user est : " + req.idUser);
   // console.log("votre email : " + req.mail);
@@ -16,18 +16,14 @@ router.post("/createActivite", auth.authentification, (req, res) => {
       .status(403)
       .json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
   } else {
-    const { nom, description, prix, typePrix, idType } = req.body;
-    const insertActivite =
-      "INSERT INTO activite (nom, description, prix, typePrix, idType) VALUES (?,?,?,?,?);";
-    bdd.query(
-      insertActivite,
-      [nom, description, prix, typePrix, idType],
-      (error, result) => {
+    const { nom } = req.body;
+    const insertTypeActivite = "INSERT INTO type_activite (nom) VALUE (?);";
+    bdd.query(insertTypeActivite,[nom],(error, result) => {
         if (error) {
           return res.status(500).send("Une erreur s'est produite.");
         }
         console.log(result);
-        return res.send("Nouvelle activité ajoutée");
+        return res.send("Nouveau type d'activité ajouté");
       }
     );
   }
@@ -35,13 +31,13 @@ router.post("/createActivite", auth.authentification, (req, res) => {
 
 
 // route pour AFFICHER les activités
-router.get("/readActivites", (req, res) => {
-  // console.log("votre role est : " + req.role);
-  // console.log("id user est : " + req.idUser);
-  // console.log("votre email : " + req.mail);
-  const readActivites =
-    "SELECT type_activite.idType, type_activite.nom as nomType , activite.idActivite, activite.nom FROM activite INNER JOIN type_activite ON type_activite.idType=activite.idType;";
-  bdd.query(readActivites, (error, result) => {
+router.get("/readTypeActivites", (req, res) => {
+  console.log("votre role est : " + req.role);
+  console.log("id user est : " + req.idUser);
+  console.log("votre email : " + req.mail);
+  const readTypeActivites =
+    "SELECT type_activite.idType, type_activite.nom as nomType from type_activite ORDER BY type_activite.idType ASC;";
+  bdd.query(readTypeActivites, (error, result) => {
     if (error) throw error;
     res.json(result);
   });
@@ -63,21 +59,6 @@ router.get("/readActiviteById/:idActivite", auth.authentification, (req,res)=>{
     });
 });
 
-// route pour AFIICHER LES ACTIVITES PAR TYPE
-router.get("/readActiviteByIdType/:idType", auth.authentification, (req,res)=>{
-  console.log("je suis au début d ema fonction");
-  
-    console.log("votre role est : " + req.role);
-    console.log("id user est : " + req.idUser);
-    console.log("votre email : " + req.mail);
-    const {idType} = req.params;
-    console.log(idType);
-    const readActiviteByIdType ="SELECT type_activite.idType, type_activite.nom as nomType , activite.idActivite, activite.nom AS nomActivite FROM activite INNER JOIN type_activite ON type_activite.idType=activite.idType WHERE type_activite.idType=? ORDER BY activite.nom ASC;";
-    bdd.query(readActiviteByIdType, [idType], (error, result)=>{
-      if (error) throw error;
-      res.json(result);
-    });
-});
 
 
 // route pour METTRE A JOUR UNE activité - UNIQUEMENT POUR LES ADMIN

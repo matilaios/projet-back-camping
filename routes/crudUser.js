@@ -184,7 +184,7 @@ console.log(req.role);
 console.log(req.body);
  let queryParams= [];
   // let bdd.query(updateUser, [nom, prenom, role, dateNaissance, mail, telephone, adresse, codePostal, ville, pays, idUser], (error) => {
-  if (req.role === false) {
+  if (req.role == false) {
     console.log("vous n aurez pas accès aux modifications du rôle");
     updateUser = "UPDATE users SET nom = ?, prenom = ?, dateNaissance= ?, mail = ?, telephone = ?, adresse = ?, codePostal = ?, ville = ?, pays = ? WHERE idUser = ?;";
    queryParams = [nom, prenom, dateNaissance, mail, telephone, adresse, codePostal, ville, pays, idUser ]
