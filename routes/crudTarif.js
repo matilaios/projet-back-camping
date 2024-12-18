@@ -21,7 +21,7 @@ router.post("/createTarif", async (req, res) => {
     })};
   });
 
-// route lecture des Tarifs
+// route LECTURE  des Tarifs - FONCTIONNE
 router.get("/readTarif", (req, res) => {
     const readTarif = "SELECT * FROM Tarif;";
     bdd.query(readTarif, (error, results) => {
@@ -30,7 +30,8 @@ router.get("/readTarif", (req, res) => {
     });
   });
 
-//route lecture d'un Tarif par son ID
+
+//route lecture d'un Tarif par son ID - FONTIONNE
 router.get("/readTarifById/:idTarif", (req, res) => {
     const { idTarif } = req.params;
     const readTarifById = "SELECT * FROM Tarif WHERE idTarif = ?;";
@@ -40,14 +41,21 @@ router.get("/readTarifById/:idTarif", (req, res) => {
     });
   });
 
-// route mise à jour d'un Tarif par son ID
-router.post("/updateTarif/:idTarif", async (req, res) => {
+// route MISE A JOURf par son ID
+router.post("/updateTarif/:idTarif",auth.authentification ,async (req, res) => {
   if (req.role == false) {
     console.log("vous n'avez pas accès à cette fonctionnalité");
     res.status(403).json({ message: "Vous n'avez pas accès à cette fonctionnalité." });
   } else {
-  const { idTarif } = req.params;
-  const { nom, prix } = req.body;
+    const { idTarif } = req.params;
+    const { nom, prix } = req.body;
+    const updateTarifById = "UPDATE tarif SET nom=?,prix=? WHERE idTarif=?;"
+
+  
+
+
+
+
 
   // Récupérer les valeurs actuelles du tarif
   const getTarif = "SELECT * FROM Tarif WHERE idTarif = ?;";
