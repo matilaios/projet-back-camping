@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
 
+
 // route creation Photo entre le code et la BDD
 router.post("/createPhoto", async (req, res) => {
   if (req.role == false) {

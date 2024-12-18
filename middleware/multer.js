@@ -18,6 +18,19 @@ const storage = multer.diskStorage({
   
   const upload = multer({ storage: storage });
 
+  const fileFilter = (
+    _,
+    file,
+    callback,
+  ) => {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
+      return callback(
+        new Error('Only image files are allowed'),
+        false,
+      );
+    callback(null, true);
+  };
+
   // Route pour uploader un fichier avec un champ nommé 'file'
 app.post('/upload', upload.single('file'), (req, res) => {
     // `req.file` contient les informations du fichier uploadé
@@ -34,4 +47,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
     res.send('La route fonctionne !');
   });
 
-  module.exports = router;
+  const configurationStorage = () => multer({ storage, fileFilter });
+
+  export default configurationStorage;
+
