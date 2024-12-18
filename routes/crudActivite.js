@@ -34,7 +34,7 @@ router.post("/createActivite", auth.authentification, (req, res) => {
 });
 
 
-// route pour AFFICHER les activités
+// route pour AFFICHER les activités - INUTILE - ON NE S4EN SERT PAS
 router.get("/readActivites", (req, res) => {
   // console.log("votre role est : " + req.role);
   // console.log("id user est : " + req.idUser);
@@ -50,7 +50,7 @@ router.get("/readActivites", (req, res) => {
 
 
 // route pour AFFICHER UNE activité par son ID 
-router.get("/readActiviteById/:idActivite", auth.authentification, (req,res)=>{
+router.get("/readActiviteById/:idActivite", (req,res)=>{
     // console.log("votre role est : " + req.role);
     // console.log("id user est : " + req.idUser);
     // console.log("votre email : " + req.mail);
@@ -64,7 +64,7 @@ router.get("/readActiviteById/:idActivite", auth.authentification, (req,res)=>{
 });
 
 // route pour AFIICHER LES ACTIVITES PAR TYPE
-router.get("/readActiviteByIdType/:idType", auth.authentification, (req,res)=>{
+router.get("/readActiviteByIdType/:idType", (req,res)=>{
   console.log("je suis au début d ema fonction");
   
     console.log("votre role est : " + req.role);
@@ -72,7 +72,7 @@ router.get("/readActiviteByIdType/:idType", auth.authentification, (req,res)=>{
     console.log("votre email : " + req.mail);
     const {idType} = req.params;
     console.log(idType);
-    const readActiviteByIdType ="SELECT type_activite.idType, type_activite.nom as nomType , activite.idActivite, activite.nom AS nomActivite FROM activite INNER JOIN type_activite ON type_activite.idType=activite.idType WHERE type_activite.idType=? ORDER BY activite.nom ASC;";
+    const readActiviteByIdType ="SELECT type_activite.idType, type_activite.nom as nomType , activite.idActivite, activite.nom AS nomActivite,activite.description, activite.prix, activite.typePrix  FROM activite INNER JOIN type_activite ON type_activite.idType=activite.idType WHERE type_activite.idType=? ORDER BY activite.nom ASC;";
     bdd.query(readActiviteByIdType, [idType], (error, result)=>{
       if (error) throw error;
       res.json(result);
