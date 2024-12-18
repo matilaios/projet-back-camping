@@ -30,7 +30,7 @@ router.post("/createTypeActivite", auth.authentification, (req, res) => {
 });
 
 
-// route pour AFFICHER les activités
+// route pour AFFICHER les types d'activités
 router.get("/readTypeActivites", (req, res) => {
   console.log("votre role est : " + req.role);
   console.log("id user est : " + req.idUser);
@@ -44,15 +44,15 @@ router.get("/readTypeActivites", (req, res) => {
 });
 
 
-
-// route pour AFFICHER UNE activité par son ID 
-router.get("/readActiviteById/:idActivite", auth.authentification, (req,res)=>{
+// a modifier pour les types
+// route pour AFFICHER UN TYPE D' activité par son ID 
+router.get("/readTypeActiviteById/:idTypeActivite", auth.authentification, (req,res)=>{
     // console.log("votre role est : " + req.role);
     // console.log("id user est : " + req.idUser);
     // console.log("votre email : " + req.mail);
-    const {idActivite} = req.params;
-    // console.log(idActivite);
-    const readActiviteById = "SELECT type_activite.idType, type_activite.nom as nomType, activite.nom, activite.description, activite.prix, activite.typePrix FROM activite INNER JOIN type_activite ON type_activite.idType=activite.idType WHERE activite.idActivite=?;";
+    const {idTypeActivite} = req.params;
+    // console.log(idTypeActivite);
+    const readTypeActiviteById = "SELECT type_activite.idType, type_activite.nom as nomType, activite.nom, activite.description, activite.prix, activite.typePrix FROM activite INNER JOIN type_activite ON type_activite.idType=activite.idType WHERE activite.idActivite=?;";
     bdd.query(readActiviteById, [idActivite], (error, result)=>{
       if (error) throw error;
       res.json(result);
@@ -60,7 +60,7 @@ router.get("/readActiviteById/:idActivite", auth.authentification, (req,res)=>{
 });
 
 
-
+// a modifier pour les types
 // route pour METTRE A JOUR UNE activité - UNIQUEMENT POUR LES ADMIN
 router.post("/updateActiviteById/:idActivite", auth.authentification, (req,res)=>{
   console.log("votre role est : " + req.role);
@@ -85,6 +85,7 @@ router.post("/updateActiviteById/:idActivite", auth.authentification, (req,res)=
 });
 
 
+// a modifier pour les types
 // route pour SUPPRIMER une activité - UNIQUEMENT POUR LES ADMIN
 router.post("/deleteActiviteById/:idActivite", auth.authentification, (req,res)=>{
   console.log("votre role est : " + req.role);
