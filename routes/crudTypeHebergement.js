@@ -72,7 +72,7 @@ router.get("/readTypeHebergement", (req, res) => {
   //route lecture d'un hebergement par son ID
   router.get("/readTypeHebergementById/:idTYPE", (req, res) => {
     const { idTYPE } = req.params;
-    const readHebergementById = "SELECT th.idTYPE, th.nom AS nom_hebergement, th.description AS description_hebergement, th.capacite AS capacite_hebergement, p.nom AS nom_photo, p.image FROM type_hebergement th LEFT JOIN photo p ON th.idTYPE = p.idTYPE;";
+    const readHebergementById = "SELECT  th.idTYPE,  th.nom AS nom_hebergement, th.description AS description_hebergement, th.capacite AS capacite_hebergement, p.nom AS nom_photo, p.image, e.nom AS nom_equipement, e.description AS description_equipement, e.consommable, e.quantite FROM type_hebergement th LEFT JOIN photo p ON th.idTYPE = p.idTYPE LEFT JOIN equipement_type_hebergement eth ON th.idTYPE = eth.idTYPE LEFT JOIN equipement e ON eth.idEquipement = e.idEquipement WHERE th.idTYPE = ?;";
     bdd.query(readHebergementById, [idTYPE], (error, results) => {
         if (error) {
             console.error("Erreur lors de la requête SQL:", error);
