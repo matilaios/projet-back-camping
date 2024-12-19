@@ -11,9 +11,9 @@ const auth = require("../middleware/auth");
 //  a completer avec les infos que l'on veut rentrer
 router.post("/createReservation", auth.authentification, (req,res)=>{
 
-    const {dateDebut,prixTotal, dateFin, nombreAdulte, nombreEnfant, nombreBebe, nombreVehicule} = req.body;
-    const insertResa = "INSERT INTO reservation (dateDebut, dateFin, prixTotal, nombreAdulte, nombreEnfant, nombreBebe, nombreVehicule, idUser) VALUES (?,?,?,?,?,?,?,?);";
-    bdd.query(insertResa, [dateDebut, dateFin, prixTotal, nombreAdulte, nombreEnfant, nombreBebe, nombreVehicule, [req.userId]], (error)=>{
+    const {dateDebut,prixTotal, dateFin} = req.body;
+    const insertResa = "INSERT INTO reservation (dateDebut, dateFin, prixTotal, idUser) VALUES (?,?,?,?);";
+    bdd.query(insertResa, [dateDebut, dateFin, prixTotal, [req.userId]], (error)=>{
       if (error) throw error;
         res.send("nouvelle reservation créée");
 });
